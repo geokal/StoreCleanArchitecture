@@ -12,25 +12,25 @@ namespace Store.Infrastructure.Persistence.Repositories
 {
     public class ProductRepository : IProductRepository
     {
-        private readonly StoreContext storeContext;
-        private readonly IMapper mapper;
+        private readonly StoreContext _storeContext;
+        private readonly IMapper _mapper;
 
         public ProductRepository(StoreContext storeContext, IMapper mapper)
         {
-            this.storeContext = storeContext;
-            this.mapper = mapper;
+            this._storeContext = storeContext;
+            this._mapper = mapper;
         }
 
         public ProductResponse CreateProduct(CreateProductRequest request)
         {
-            var product = this.mapper.Map<Product>(request);
+            var product = this._mapper.Map<Product>(request);
             product.Stock = 0;
             product.CreatedAt = product.UpdatedAt = DateUtil.GetCurrentDate();
 
-            this.storeContext.Products.Add(product);
-            this.storeContext.SaveChanges();
+            this._storeContext.Products.Add(product);
+            this._storeContext.SaveChanges();
 
-            return this.mapper.Map<ProductResponse>(product);
+            return this._mapper.Map<ProductResponse>(product);
         }
 
         ProductResponse IProductRepository.UpdateProduct(int productId, UpdateProductRequest request)
@@ -45,11 +45,11 @@ namespace Store.Infrastructure.Persistence.Repositories
 
         public void DeleteProductById(int productId)
         {
-            var product = this.storeContext.Products.Find(productId);
+            var product = this._storeContext.Products.Find(productId);
             if (product != null)
             {
-                this.storeContext.Products.Remove(product);
-                this.storeContext.SaveChanges();
+                this._storeContext.Products.Remove(product);
+                this._storeContext.SaveChanges();
             }
 
             throw new NotFoundException();
@@ -67,10 +67,10 @@ namespace Store.Infrastructure.Persistence.Repositories
 
         public ProductResponse GetProductById(int productId)
         {
-            var product = this.storeContext.Products.Find(productId);
+            var product = this._storeContext.Products.Find(productId);
             if (product != null)
             {
-                return this.mapper.Map<ProductResponse>(product);
+                return this._mapper.Map<ProductResponse>(product);
             }
 
             throw new NotFoundException();
@@ -78,12 +78,12 @@ namespace Store.Infrastructure.Persistence.Repositories
 
         public List<ProductResponse> GetProducts()
         {
-            return this.storeContext.Products.Select(p => this.mapper.Map<ProductResponse>(p)).ToList();
+            return this._storeContext.Products.Select(p => this._mapper.Map<ProductResponse>(p)).ToList();
         }
 
         public ProductResponse UpdateProduct(int productId, UpdateProductRequest request)
         {
-            var product = this.storeContext.Products.Find(productId);
+            var product = this._storeContext.Products.Find(productId);
             if (product != null)
             {
                 product.Name = request.Name;
@@ -92,10 +92,10 @@ namespace Store.Infrastructure.Persistence.Repositories
                 product.Stock = request.Stock;
                 product.UpdatedAt = DateUtil.GetCurrentDate();
 
-                this.storeContext.Products.Update(product);
-                this.storeContext.SaveChanges();
+                this._storeContext.Products.Update(product);
+                this._storeContext.SaveChanges();
 
-                return this.mapper.Map<ProductResponse>(product);
+                return this._mapper.Map<ProductResponse>(product);
             }
 
             throw new NotFoundException();
